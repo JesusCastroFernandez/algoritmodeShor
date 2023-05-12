@@ -1,0 +1,64 @@
+-- Definir la función que calcula el máximo común divisor
+function gcd(a: Int, b: Int): Int {
+    if b == 0 {
+        return a
+    } else {
+        return gcd(b, a % b)
+    }
+}
+
+-- Definir la función que calcula la exponenciación modular
+function modexp(base: Int, exp: Int, mod: Int): Int {
+    let result = 1
+    for i in 1..exp {
+        result = (result * base) % mod
+    }
+    return result
+}
+
+-- Definir la función que genera un número aleatorio impar
+function randomOdd(n: Int): Int {
+    let rnd = RandomInt(2^(n-1), 2^n - 1)
+    if rnd % 2 == 0 {
+        rnd += 1
+    }
+    return rnd
+}
+
+-- Definir la función que busca un factor común utilizando el algoritmo de Euclides
+function findFactor(n: Int, a: Int): Int {
+    let x = modexp(a, n/2, n)
+    let y = (x + 1) % n
+    let d = gcd(y, n)
+    if d != 1 && d != n {
+        return d
+    } else {
+        return -1
+    }
+}
+
+-- Definir la función que ejecuta el algoritmo de Shor
+function shor(n: Int): Int[] {
+    let a = randomOdd(IntLog2(n) + 1)
+    let d = gcd(a, n)
+    while d == 1 {
+        a = randomOdd(IntLog2(n) + 1)
+        d = gcd(a, n)
+    }
+    if d == n {
+        return [-1, -1]
+    } else {
+        let p = d
+        let q = n / d
+        return [p, q]
+    }
+}
+
+-- Ejecutar el algoritmo de Shor en un número entero
+let n = 15
+let factors = shor(n)
+if factors[0] == -1 {
+    print("El algoritmo de Shor ha fallado")
+} else {
+    print("Los factores de " + IntToString(n) + " son " + IntToString(factors[0]) + " y " + IntToString(factors[1]))
+}
